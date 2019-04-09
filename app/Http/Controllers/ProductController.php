@@ -2,24 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
 use App\Product;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    // Add product
+    /**
+     * @var User  $user
+     */
+    private $user;
+
+    public function __construct()
+    {
+        $this->user = Auth::user();
+    }
 
     public function addProduct(Request $request)
     {
-        $product = new Product();
-        $product->name = $request->get('name');
-        $product->category_id = Category::where('category', $request->get('category'))->firstOrFail()->id;
-        $product->image = Storage::disk('public')->putFile('avatars', $request->file('image'));
-        $product->save();
+        $user = $this->user;
+        if (!$user->categories()->where('category', $request->category)->orWhere('category_id', $request->category_id)->exists()) {
+            return response()->json(["message" => "You doesn't have permission to this category"]);
+        }
+        $product = Product::create($request->all());
 
         return $product;
     }
@@ -29,23 +35,14 @@ class ProductController extends Controller
     public function editProduct(Request $request, $product_id)
     {
 
-
-        $user = User::find(Auth::id());
-
-        foreach ($user->categories as $category) {
-            $categoryName = $category->category;
-            $productName = Category::where('category', $categoryName)->first();
-            foreach ($productName->product as $prod) {
-                if ($prod->id == $product_id) {
-                    Product::where('id', $product_id)->first()->update($request->all());
-                    $product = Product::find($product_id);
-
-                    return response()->json($product);
-                }
-
-            }
-
+        /** @var User $user */
+        $user = $this->user;
+        $product = Product::findOrFail($product_id);
+        if ($user->categories()->where('category_id', $product->categories->id)->exists()) {
+            $product->update($request->all());
+            return response()->json($product);
         }
+
         return response()->json(["message" => "You doesn't have permission to this category"]);
     }
 

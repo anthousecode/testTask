@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // Register new User
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function register(Request $request)
     {
 
@@ -35,8 +37,11 @@ class AuthController extends Controller
 
     }
 
-    // Login User/Admin managers/Super Admin
-
+    /**
+     * Login User/Admin managers/Super Admin
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function login(Request $request)
     {
 
@@ -60,8 +65,11 @@ class AuthController extends Controller
 
     }
 
-    // Logout
-
+    /**
+     * Logout
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout(Request $request)
     {
 
