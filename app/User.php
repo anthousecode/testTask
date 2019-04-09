@@ -40,6 +40,9 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function categories()
     {
         return $this->belongsToMany('App\Category', 'category_user', 'user_id', 'category_id');

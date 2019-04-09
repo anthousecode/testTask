@@ -9,11 +9,17 @@ class Category extends Model
     //
     protected $fillable = ['category'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function product()
     {
         return $this->hasMany('App\Product', 'category_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users()
     {
         return $this->belongsToMany('App\User', 'category_user', 'category_id', 'user_id');
