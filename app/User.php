@@ -2,14 +2,14 @@
 
 namespace App;
 
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles;
+    use HasApiTokens, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -40,5 +40,8 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
-    protected $guard_name = 'web';
+    public function categories()
+    {
+        return $this->belongsToMany('App\Category', 'category_user', 'user_id', 'category_id');
+    }
 }
